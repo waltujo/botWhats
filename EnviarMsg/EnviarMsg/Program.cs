@@ -30,13 +30,12 @@ namespace BoWhatsMessage
                 //LEMBRAR DE CONFIGURAR O CAMINHO DO ARQUIVO EXCEL
                 var caminhoArquivo = $@"C:\Users\{nomeUser}\Contatos\Contatos.xlsx";
                 var pathMessage = $@"C:\Users\{nomeUser}\Contatos\mensagem.txt";
-                
+
                 FecharInstanciasNavegador();
 
                 //Lista de contatos
                 //Console.WriteLine("Criando a lista de transmissão...");
                 var contatos = ExtrairNumerosContatos(caminhoArquivo);
-                //contatos = contatos.Distinct().Where(a => a != "").ToList();
                 contatos = contatos.Select(c => c.Trim()).Distinct().Where(c => !string.IsNullOrEmpty(c)).ToList();
 
                 var telefone = CorrigirNumerosTelefone(contatos);
@@ -63,7 +62,7 @@ namespace BoWhatsMessage
                         // Abre o WhatsApp Web
                         driver.Navigate().GoToUrl("https://web.whatsapp.com");
 
-                        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
 
                         // Aguarda o usuário fazer o login
                         // Verificar se está na tela de escaneamento do QR code
@@ -73,12 +72,12 @@ namespace BoWhatsMessage
                             Console.ReadLine();
                         }
 
-                        wait.Until(ExpectedConditions.ElementIsVisible(By.Id("pane-side")));
+                        //wait.Until(ExpectedConditions.ElementIsVisible(By.Id("pane-side")));
 
-                        //while (driver.FindElements(By.Id("pane-side")).Count < 1)
-                        //{
-                        //    Thread.Sleep(1000);
-                        //}
+                        while (driver.FindElements(By.Id("pane-side")).Count < 1)
+                        {
+                            Thread.Sleep(2000);
+                        }
 
                         foreach (var contato in telefone)
                         {
@@ -86,22 +85,29 @@ namespace BoWhatsMessage
 
                             driver.Navigate().GoToUrl(link);
 
-                            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("pane-side")));
+                            //wait.Until(ExpectedConditions.ElementIsVisible(By.Id("pane-side")));
 
                             while (driver.FindElements(By.Id("pane-side")).Count < 1)
                             {
                                 Thread.Sleep(3000);
                             }
 
+                            //PEGA O BOTÃO + 
                             var attachFile = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-icon='attach-menu-plus']")));
                             attachFile.Click();
 
                             //var inputFile = driver.FindElement(By.XPath("//input[@type='file']"));
                             //inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\teste.png");
 
+                            Thread.Sleep(3000);
+
+                            //ADICIONA O ARQUIVO
                             var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div/div/span/div/ul/div/div[2]/li/div/input"));
                             inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\promo.png");
 
+                            Thread.Sleep(3000);
+
+                            //BOTÃO DE ENVIAR
                             var btnSend = driver.FindElement(By.XPath("//span[@data-icon='send']"));
                             btnSend.Click();
 
@@ -165,7 +171,7 @@ namespace BoWhatsMessage
 
             foreach (var contato in contatos)
             {
-                if(contato.Length < 10) { continue; }
+                if (contato.Length < 10) { continue; }
                 // Remove espaços e traços do número
                 string numeroLimpo = Regex.Replace(contato, @"\s+|\-", "");
 

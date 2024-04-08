@@ -4878,11 +4878,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\henri\\source\\repos\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
+      "projectUniqueName": "C:\\Users\\henri\\source\\repos\\git\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
       "projectName": "EnviarMsg",
-      "projectPath": "C:\\Users\\henri\\source\\repos\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
+      "projectPath": "C:\\Users\\henri\\source\\repos\\git\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
       "packagesPath": "C:\\Users\\henri\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\henri\\source\\repos\\EnviarMsg\\EnviarMsg\\obj\\",
+      "outputPath": "C:\\Users\\henri\\source\\repos\\git\\EnviarMsg\\EnviarMsg\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
