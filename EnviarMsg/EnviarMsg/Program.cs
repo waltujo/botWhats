@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -14,34 +15,26 @@ namespace BoWhatsMessage
 {
     public partial class Program
     {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool SetConsoleTitle(string title);
-
-        [Obsolete]
         static void Main(string[] args)
         {
             try
             {
-                SetConsoleTitle("WhatsApp Send Message Automation");
-
+                Console.Title = "Automação WhatsApp";
                 Console.ForegroundColor = ConsoleColor.Green;
 
                 var nomeUser = Environment.UserName;
                 //LEMBRAR DE CONFIGURAR O CAMINHO DO ARQUIVO EXCEL
-                var caminhoArquivo = $@"C:\Users\{nomeUser}\Contatos\Contatos.xlsx";
-                var pathMessage = $@"C:\Users\{nomeUser}\Contatos\mensagem.txt";
-
-                FecharInstanciasNavegador();
+                var pathExcel = $@"C:\Users\{nomeUser}\Contatos\Contatos.xlsx";
+                var pathMensagem = $@"C:\Users\{nomeUser}\Contatos\mensagem.txt";
 
                 //Lista de contatos
-                //Console.WriteLine("Criando a lista de transmissão...");
-                var contatos = ExtrairNumerosContatos(caminhoArquivo);
+                var contatos = ExtrairNumerosContatos(pathExcel);
                 contatos = contatos.Select(c => c.Trim()).Distinct().Where(c => !string.IsNullOrEmpty(c)).ToList();
 
                 var telefone = CorrigirNumerosTelefone(contatos);
                 //Mensagem que vai ser enviada.
 
-                var mensagem = File.ReadAllText(pathMessage).Replace("\r\n", "");
+                var mensagem = File.ReadAllText(pathMensagem).Replace("\r\n", "");
 
                 ChromeOptions options = new();
                 options.AddArguments("chrome.switches", "--disable-extensions");
@@ -59,6 +52,7 @@ namespace BoWhatsMessage
                 {
                     try
                     {
+                        Console.Clear();
                         // Abre o WhatsApp Web
                         driver.Navigate().GoToUrl("https://web.whatsapp.com");
 
@@ -66,104 +60,112 @@ namespace BoWhatsMessage
 
                         // Aguarda o usuário fazer o login
                         // Verificar se está na tela de escaneamento do QR code
-                        if (ScanQrCode(driver, wait))
+                        if (ScanQrCode(wait))
                         {
                             Console.WriteLine("Por favor, escaneie o QR code.");
                             Console.ReadLine();
                         }
 
-                        //wait.Until(ExpectedConditions.ElementIsVisible(By.Id("pane-side")));
-
-                        while (driver.FindElements(By.Id("pane-side")).Count < 1)
-                        {
-                            Thread.Sleep(2000);
-                        }
 
                         foreach (var contato in telefone)
                         {
-                            var link = $"https://web.whatsapp.com/send?phone={contato}&text={mensagem}";
-
-                            driver.Navigate().GoToUrl(link);
-
-                            //wait.Until(ExpectedConditions.ElementIsVisible(By.Id("pane-side")));
-
-                            while (driver.FindElements(By.Id("pane-side")).Count < 1)
-                            {
-                                Thread.Sleep(3000);
-                            }
-
-                            //PEGA O BOTÃO + 
-                            var attachFile = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-icon='attach-menu-plus']")));
-                            attachFile.Click();
-
-                            //var inputFile = driver.FindElement(By.XPath("//input[@type='file']"));
-                            //inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\teste.png");
-
-                            Thread.Sleep(3000);
-
-                            //ADICIONA O ARQUIVO
-                            var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div/div/span/div/ul/div/div[2]/li/div/input"));
-                            inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\promo.png");
-
-                            Thread.Sleep(3000);
-
-                            //BOTÃO DE ENVIAR
-                            var btnSend = driver.FindElement(By.XPath("//span[@data-icon='send']"));
-                            btnSend.Click();
-
-                            #region
-                            //var elementSearch = driver.FindElement(By.ClassName("iq0m558w"));
-                            //elementSearch.SendKeys(contato);
-
-                            //Thread.Sleep(1000);
-
-                            //var nomeContato = driver.FindElement(By.XPath($"//span[@title='{contato}']"));
-                            //nomeContato.Click();
-
-                            //Thread.Sleep(1000);
-
-                            //var attachFile = driver.FindElement(By.ClassName("bo8jc6qi"));
-                            //attachFile.Click();
-
-                            //var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div[2]/div/span/div/ul/div/div[2]/li/div/input"));
-                            //inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\promo.png");
-
-                            //Thread.Sleep(1000);
-
-                            //var chat = driver.FindElement(By.ClassName("iq0m558w"));
-                            //chat.SendKeys(mensagem);
-
-                            //Thread.Sleep(1000);
-
-                            //var btnSend = driver.FindElement(By.XPath("//span[@data-icon='send']"));
-                            //btnSend.Click();
-
-                            //Thread.Sleep(1000);
-
-                            //Console.WriteLine($"A mensagem foi enviada para {contato} com sucesso!");
-                            #endregion
+                            Console.WriteLine($"{telefone.IndexOf(contato) + 1} / {telefone.Count} == {contato}");
+                            EnviarMensagem(driver, wait, contato, mensagem, nomeUser);
                         }
+                        Console.WriteLine("MENSAGENS ENVIADAS COM SUCESSO!! -- APERTE QUALQUER TECLA PRA FINALIZAR!");
+                        Console.ReadLine();
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
                         throw ex.InnerException;
                     }
+                    finally
+                    {
+                    }
                 }
-
-                Console.WriteLine("Mensagens enviadas com sucesso!");
-                Console.ReadLine();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}");
-                Console.ReadLine();
+                throw ex.InnerException;
             }
             finally
             {
-                FecharInstanciasNavegador();
             }
         }
+
+        static void EnviarMensagem(ChromeDriver driver, WebDriverWait wait, string telefone, string mensagem, string nomeUser)
+        {
+            var link = $"https://web.whatsapp.com/send?phone={telefone}&text={mensagem}";
+
+            try
+            {
+                driver.Navigate().GoToUrl(link);
+
+                HandlePopup(driver, alert => alert.Accept());
+
+                //PEGA O BOTÃO + 
+                var attachFile = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-icon='attach-menu-plus']")));
+                attachFile.Click();
+
+                //var inputFile = driver.FindElement(By.XPath("//input[@type='file']"));
+                //inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\teste.png");
+
+                Thread.Sleep(500);
+
+                //ADICIONA O ARQUIVO
+                var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div/div/span/div/ul/div/div[2]/li/div/input"));
+                inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\promo.png");
+
+                Thread.Sleep(500);
+
+                //BOTÃO DE ENVIAR
+                var btnSend = driver.FindElement(By.XPath("//span[@data-icon='send']"));
+                //btnSend.Click();
+
+                Thread.Sleep(500);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Número inválido == {telefone}");
+                // Se ocorrer um erro, vá para o próximo número da lista
+                return;
+            }
+
+            Console.WriteLine($"Mensagem enviada para {telefone}");
+        }
+
+        public static void HandlePopup(IWebDriver driver, Action<IAlert> action)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+                wait.Until(ExpectedConditions.AlertIsPresent());
+
+                IAlert alert = driver.SwitchTo().Alert();
+                action(alert); // Executa a ação desejada no pop-up
+
+                // Confirma ou cancela o pop-up após a ação
+                // alert.Accept(); // Para confirmar o pop-up
+                // alert.Dismiss(); // Para cancelar o pop-up
+
+                driver.SwitchTo().DefaultContent(); // Volta para o contexto padrão da página
+            }
+            catch (NoAlertPresentException)
+            {
+                // Nenhum pop-up encontrado, continue com o fluxo normal
+            }
+            catch (WebDriverTimeoutException)
+            {
+                // Tempo limite excedido esperando pelo pop-up
+            }
+            catch (Exception ex)
+            {
+                // Outro tipo de exceção
+                Console.WriteLine($"Erro ao lidar com o pop-up: {ex.Message}");
+            }
+        }
+
 
         static List<string> CorrigirNumerosTelefone(List<string> contatos)
         {
@@ -191,8 +193,8 @@ namespace BoWhatsMessage
             return contatosCorrigidos;
         }
 
-        [Obsolete]
-        static bool ScanQrCode(ChromeDriver driver, WebDriverWait wait)
+        
+        static bool ScanQrCode(WebDriverWait wait)
         {
             try
             {
