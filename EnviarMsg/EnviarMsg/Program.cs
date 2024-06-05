@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Bibliography;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -26,6 +24,10 @@ namespace BoWhatsMessage
                 //LEMBRAR DE CONFIGURAR O CAMINHO DO ARQUIVO EXCEL
                 var pathExcel = $@"C:\Users\{nomeUser}\Contatos\Contatos.xlsx";
                 var pathMensagem = $@"C:\Users\{nomeUser}\Contatos\mensagem.txt";
+
+                //DIGITAR O NOME DO ARQUIVO QUE DESEJA ENVIAR, EX: FOTO.MP4
+                Console.WriteLine("DIGITAR O NOME DO ARQUIVO QUE DESEJA ENVIAR, EX: FOTO.MP4");
+                var arquivo = Console.ReadLine();
 
                 //Lista de contatos
                 var contatos = ExtrairNumerosContatos(pathExcel);
@@ -69,8 +71,9 @@ namespace BoWhatsMessage
 
                         foreach (var contato in telefone)
                         {
+                            Console.ForegroundColor = ConsoleColor.Blue;
                             Console.WriteLine($"{telefone.IndexOf(contato) + 1} / {telefone.Count} == {contato}");
-                            EnviarMensagem(driver, wait, contato, mensagem, nomeUser);
+                            EnviarMensagem(driver, wait, contato, mensagem, nomeUser, arquivo);
                         }
                         Console.WriteLine("MENSAGENS ENVIADAS COM SUCESSO!! -- APERTE QUALQUER TECLA PRA FINALIZAR!");
                         Console.ReadLine();
@@ -93,7 +96,7 @@ namespace BoWhatsMessage
             }
         }
 
-        static void EnviarMensagem(ChromeDriver driver, WebDriverWait wait, string telefone, string mensagem, string nomeUser)
+        static void EnviarMensagem(ChromeDriver driver, WebDriverWait wait, string telefone, string mensagem, string nomeUser, string arquivo)
         {
             var link = $"https://web.whatsapp.com/send?phone={telefone}&text={mensagem}";
 
@@ -114,7 +117,7 @@ namespace BoWhatsMessage
 
                 //ADICIONA O ARQUIVO
                 var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div/div/span/div/ul/div/div[2]/li/div/input"));
-                inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\promo.png");
+                inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\{arquivo}");
 
                 Thread.Sleep(500);
 
@@ -132,6 +135,7 @@ namespace BoWhatsMessage
                 return;
             }
 
+            Console.ForegroundColor= ConsoleColor.Green;
             Console.WriteLine($"Mensagem enviada para {telefone}");
         }
 
@@ -139,7 +143,8 @@ namespace BoWhatsMessage
         {
             try
             {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+
                 wait.Until(ExpectedConditions.AlertIsPresent());
 
                 IAlert alert = driver.SwitchTo().Alert();
@@ -186,7 +191,7 @@ namespace BoWhatsMessage
                 else
                 {
                     // Se o número não tem o formato esperado, adiciona o número original à lista de contatos corrigidos
-                    contatosCorrigidos.Add(contato);
+                    contatosCorrigidos.Add(numeroLimpo);
                 }
             }
 
@@ -199,7 +204,7 @@ namespace BoWhatsMessage
             try
             {
                 // Verifica se o elemento que indica a tela de escaneamento do QR code está visível
-                var qrcode = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("_19vUU")));
+                var qrcode = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//canvas[@aria-label='Scan me!']")));
 
                 return qrcode.Displayed; // Retorna true se o QR code estiver sendo exibido
             }
