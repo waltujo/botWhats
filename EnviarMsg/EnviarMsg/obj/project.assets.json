@@ -4878,11 +4878,19 @@
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\marco\\Contatos\\codigo\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
       "projectName": "EnviarMsg",
       "projectPath": "C:\\Users\\marco\\Contatos\\codigo\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
       "packagesPath": "C:\\Users\\marco\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\marco\\Contatos\\codigo\\botWhats\\EnviarMsg\\EnviarMsg\\obj\\",
+=======
+      "projectUniqueName": "C:\\Users\\henri\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
+      "projectName": "EnviarMsg",
+      "projectPath": "C:\\Users\\henri\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
+      "packagesPath": "C:\\Users\\henri\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\henri\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\obj\\",
+>>>>>>> cf761ca71e40a283835fb29c477ca26c10286823
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4949,7 +4957,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   }
