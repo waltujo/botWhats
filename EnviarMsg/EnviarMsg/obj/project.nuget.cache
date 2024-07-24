@@ -1,14 +1,8 @@
 {
   "version": 2,
-<<<<<<< HEAD
   "dgSpecHash": "Y4wKv+nFGFp7KmMqtpvSTde00qTsS+Go04igkakZjGRPlrDOB94LlieAPksdYU9kzE6BMCJl9Lv8rqq7+GKWLg==",
   "success": true,
   "projectFilePath": "C:\\Users\\marco\\Contatos\\codigo\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
-=======
-  "dgSpecHash": "kJVHyj9ZUBs=",
-  "success": true,
-  "projectFilePath": "C:\\Users\\henri\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
->>>>>>> cf761ca71e40a283835fb29c477ca26c10286823
   "expectedPackageFiles": [
     "C:\\Users\\marco\\.nuget\\packages\\closedxml\\0.102.2\\closedxml.0.102.2.nupkg.sha512",
     "C:\\Users\\marco\\.nuget\\packages\\documentformat.openxml\\2.16.0\\documentformat.openxml.2.16.0.nupkg.sha512",
