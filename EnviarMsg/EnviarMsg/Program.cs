@@ -322,10 +322,6 @@ namespace BoWhatsMessage
                 Console.WriteLine(ex.Message);
                 Console.ReadLine();
             }
-            finally
-            {
-                Console.Clear();
-            }
         }
     }
 }
