@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools.V121.Network;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
@@ -69,6 +68,7 @@ namespace BoWhatsMessage
                         if (ScanQrCode(wait))
                         {
                             Console.WriteLine("Por favor, escaneie o QR code.");
+                            Console.WriteLine("Após escanear o QR COde pressionar qualquer tecla!");
                             Console.ReadLine();
                         }
 
@@ -135,7 +135,7 @@ namespace BoWhatsMessage
 
                 Thread.Sleep(2000);
 
-                btnEnviar.Click();
+                //btnEnviar.Click();
 
                 Thread.Sleep(1000);
 
@@ -222,7 +222,7 @@ namespace BoWhatsMessage
             try
             {
                 // Verifica se o elemento que indica a tela de escaneamento do QR code está visível
-                var qrcode = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//canvas[@aria-label='Scan me!']")));
+                var qrcode = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//canvas[@aria-label='Scan this QR code to link a device!']")));
 
                 return qrcode.Displayed; // Retorna true se o QR code estiver sendo exibido
             }
