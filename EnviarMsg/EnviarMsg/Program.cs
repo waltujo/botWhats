@@ -125,7 +125,7 @@ namespace BoWhatsMessage
                 Thread.Sleep(1000);
 
                 //ADICIONA O ARQUIVO
-                var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div/div/span/div/ul/div/div[2]/li/div/input"));
+                var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span/div/div[1]/div[2]/div/span/div/ul/div/div[2]/li/div/input"));
                 inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\{arquivo}");
 
                 Thread.Sleep(3000);
