@@ -100,9 +100,10 @@ namespace BoWhatsMessage
             }
             finally
             {
+                Console.WriteLine("Programa finalizado!");
+                Thread.Sleep(3000);
             }
         }
-
         static void EnviarMensagem(ChromeDriver driver, WebDriverWait wait, string telefone, string mensagem, string nomeUser, string arquivo)
         {
             var link = $"https://web.whatsapp.com/send?phone={telefone}&text={mensagem}";
@@ -125,7 +126,8 @@ namespace BoWhatsMessage
                 Thread.Sleep(1000);
 
                 //ADICIONA O ARQUIVO
-                var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span[2]/div/div[1]/div/div/span/div/ul/div/div[2]/li/div/input"));
+                //
+                var inputFile = driver.FindElement(By.XPath("//*[@id='app']/div/span[5]/div/ul/div/div/div[2]/li/div/input"));
                 inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\{arquivo}");
 
                 Thread.Sleep(3000);
@@ -135,7 +137,7 @@ namespace BoWhatsMessage
 
                 Thread.Sleep(2000);
 
-                //btnEnviar.Click();
+                btnEnviar.Click();
 
                 Thread.Sleep(1000);
 
@@ -156,7 +158,6 @@ namespace BoWhatsMessage
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Mensagem enviada para {telefone}");
         }
-
         public static void HandlePopup(IWebDriver driver, Action<IAlert> action)
         {
             try
@@ -188,8 +189,6 @@ namespace BoWhatsMessage
                 Console.WriteLine($"Erro ao lidar com o pop-up: {ex.Message}");
             }
         }
-
-
         static List<string> CorrigirNumerosTelefone(List<string> contatos)
         {
             List<string> contatosCorrigidos = new List<string>();
@@ -215,8 +214,6 @@ namespace BoWhatsMessage
 
             return contatosCorrigidos;
         }
-
-
         static bool ScanQrCode(WebDriverWait wait)
         {
             try
@@ -237,7 +234,6 @@ namespace BoWhatsMessage
                 return false;
             }
         }
-
         static List<string> ExtrairNumerosContatos(string caminhoArquivo)
         {
             var numeroContatos = new List<string>();
@@ -270,7 +266,6 @@ namespace BoWhatsMessage
 
             return numeroContatos;
         }
-
         public static void Logger(string mensagem)
         {
             string userProfilepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
@@ -295,7 +290,6 @@ namespace BoWhatsMessage
                 throw;
             }
         }
-
         static void FecharInstanciasNavegador()
         {
             Console.WriteLine("Fechando instâncias do Google Chrome...");
