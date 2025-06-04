@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\waltujo\\source\\repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj": {}
+    "C:\\Users\\waltujo\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj": {}
   },
   "projects": {
-    "C:\\Users\\waltujo\\source\\repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj": {
+    "C:\\Users\\waltujo\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\waltujo\\source\\repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
+        "projectUniqueName": "C:\\Users\\waltujo\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
         "projectName": "EnviarMsg",
-        "projectPath": "C:\\Users\\waltujo\\source\\repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
+        "projectPath": "C:\\Users\\waltujo\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\EnviarMsg.csproj",
         "packagesPath": "C:\\Users\\waltujo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\waltujo\\source\\repos\\botWhats\\EnviarMsg\\EnviarMsg\\obj\\",
+        "outputPath": "C:\\Users\\waltujo\\Source\\Repos\\botWhats\\EnviarMsg\\EnviarMsg\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -43,9 +43,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net5.0": {
@@ -80,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }
