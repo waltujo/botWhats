@@ -42,8 +42,8 @@ namespace BoWhatsMessage
                 var mensagem = File.ReadAllText(pathMensagem).Replace("\r\n", "");
 
                 ChromeOptions options = new();
-                options.AddArguments("chrome.switches", "--disable-extensions");
                 options.AddArgument("--start-maximized");
+                options.AddArguments("--disable-extensions");
                 options.AddArgument(@$"--user-data-dir=C:\Users\{nomeUser}\AppData\Local\Google\Chrome\User Data\Default"); // Altere para o caminho do seu perfil do Chrome
                 options.PageLoadStrategy = PageLoadStrategy.Normal;
 
@@ -70,6 +70,7 @@ namespace BoWhatsMessage
                             Console.WriteLine("Por favor, escaneie o QR code.");
                             Console.WriteLine("Após escanear o QR COde pressionar qualquer tecla!");
                             Console.ReadLine();
+                            Console.Clear();
                         }
 
 
@@ -125,8 +126,8 @@ namespace BoWhatsMessage
 
                 Thread.Sleep(1000);
 
-                //ADICIONA O ARQUIVO
-                var inputFile = driver.FindElement(By.XPath("//*[@id='app']/div/span[5]/div/ul/div/div/div[2]/li/div/input"));
+                //ADICIONA O ARQUIVO -- //*[@id="app"]/div/span[6]/div/ul/div/div/div[2]/li/div/input
+                var inputFile = driver.FindElement(By.XPath("//*[@id='app']/div/span[6]/div/ul/div/div/div[2]/li/div/input"));
 
                 //var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span/div/div[1]/div[2]/div/span/div/ul/div/div[2]/li/div/input"));
 
@@ -165,26 +166,27 @@ namespace BoWhatsMessage
             try
             {
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-
                 wait.Until(ExpectedConditions.AlertIsPresent());
 
-                IAlert alert = driver.SwitchTo().Alert();
-                action(alert); // Executa a ação desejada no pop-up
+                var alert = driver.SwitchTo().Alert();
+
+                try
+                {
+                    action(alert); // Executa a ação desejada no pop-up
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao lidar com o pop-up: {ex.Message}");
+                }
+
+                driver.SwitchTo().DefaultContent(); // Volta para o contexto padrão da página
 
                 // Confirma ou cancela o pop-up após a ação
                 // alert.Accept(); // Para confirmar o pop-up
                 // alert.Dismiss(); // Para cancelar o pop-up
-
-                driver.SwitchTo().DefaultContent(); // Volta para o contexto padrão da página
             }
-            catch (NoAlertPresentException)
-            {
-                // Nenhum pop-up encontrado, continue com o fluxo normal
-            }
-            catch (WebDriverTimeoutException)
-            {
-                // Tempo limite excedido esperando pelo pop-up
-            }
+            catch (NoAlertPresentException) { }
+            catch (WebDriverTimeoutException) { }
             catch (Exception ex)
             {
                 // Outro tipo de exceção
@@ -193,28 +195,31 @@ namespace BoWhatsMessage
         }
         static List<string> CorrigirNumerosTelefone(List<string> contatos)
         {
-            List<string> contatosCorrigidos = new List<string>();
+            var contatosCorrigidos = new HashSet<string>(); // Evita duplicatas automaticamente
 
-            foreach (var contato in contatos)
+            foreach (var contato in contatos.Select(c => c.Trim()))
             {
-                if (contato.Length < 10) { continue; }
-                // Remove espaços e traços do número
-                string numeroLimpo = Regex.Replace(contato, @"\s+|\-", "");
+                string numeroLimpo = Regex.Replace(contato, @"\D", ""); // Remove caracteres não numéricos
 
-                // Verifica se o número limpo tem o formato esperado
-                if (Regex.IsMatch(numeroLimpo, @"^55\d{11}$"))
+                if (numeroLimpo.Length == 10 || numeroLimpo.Length == 11) // Números sem DDD internacional
                 {
-                    // Se o número limpo tem 13 dígitos (incluindo o código do país), formata para o padrão +5571983107530
-                    contatosCorrigidos.Add($"+{numeroLimpo.Substring(0, 2)} {numeroLimpo.Substring(2, 2)} {numeroLimpo.Substring(4, 5)}-{numeroLimpo.Substring(9)}");
+                    numeroLimpo = "55" + numeroLimpo; // Adiciona o código do Brasil
                 }
-                else
+
+                // Verifica se o número já tem o formato correto (10 ou 11 dígitos após 55)
+                if (Regex.IsMatch(numeroLimpo, @"^55\d{10,11}$")) 
                 {
-                    // Se o número não tem o formato esperado, adiciona o número original à lista de contatos corrigidos
-                    contatosCorrigidos.Add(numeroLimpo);
+                    // Se for um celular sem o "9", adiciona o dígito antes do número
+                    if (Regex.IsMatch(numeroLimpo, @"^55\d{2}[2-8]\d{7}$")) // Verifica se falta o "9"
+                    {
+                        numeroLimpo = numeroLimpo.Substring(0, 4) + "9" + numeroLimpo.Substring(4);
+                    }
+
+                    contatosCorrigidos.Add($"+{numeroLimpo.Substring(0, 2)} {numeroLimpo.Substring(2, 2)} {numeroLimpo.Substring(4, 5)}-{numeroLimpo.Substring(9)}");
                 }
             }
 
-            return contatosCorrigidos;
+            return contatosCorrigidos.ToList();
         }
         static bool ScanQrCode(WebDriverWait wait)
         {
@@ -238,35 +243,9 @@ namespace BoWhatsMessage
         }
         static List<string> ExtrairNumerosContatos(string caminhoArquivo)
         {
-            var numeroContatos = new List<string>();
-
-            try
-            {
-                using (var workbook = new XLWorkbook(caminhoArquivo))
-                {
-                    var worksheet = workbook.Worksheet(1); // assumindo que os dados estão na primeira planilha
-
-                    int rowCount = worksheet.RangeUsed().RowCount();
-
-                    for (int row = 1; row <= rowCount; row++)
-                    {
-                        var numero = worksheet.Cell(row, 1).Value.ToString();
-                        numeroContatos.Add(numero); // assumindo que os nomes estão na primeira coluna
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                Console.ReadLine();
-            }
-            finally
-            {
-                Console.Clear();
-            }
-
-            return numeroContatos;
+            using var workbook = new XLWorkbook(caminhoArquivo);
+            var sheet = workbook.Worksheet(1);
+            return sheet.RowsUsed().Select(row => row.Cell(1).GetString()).ToList();
         }
         public static void Logger(string mensagem)
         {
@@ -297,7 +276,8 @@ namespace BoWhatsMessage
             Console.WriteLine("Fechando instâncias do Google Chrome...");
             try
             {
-                var processos = System.Diagnostics.Process.GetProcessesByName("chrome");
+                var processos = System.Diagnostics.Process.GetProcessesByName("chrome")
+                    .Where(p => p.MainWindowTitle.Contains("WhatsApp"));
 
                 foreach (var process in processos)
                 {
@@ -308,6 +288,7 @@ namespace BoWhatsMessage
                     }
                     catch (Exception ex)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(ex.Message);
                     }
                 }
