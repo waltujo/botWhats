@@ -102,7 +102,7 @@ namespace BoWhatsMessage
             finally
             {
                 Console.WriteLine("Programa finalizado!");
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
             }
         }
         static void EnviarMensagem(ChromeDriver driver, WebDriverWait wait, string telefone, string mensagem, string nomeUser, string arquivo)
@@ -118,7 +118,7 @@ namespace BoWhatsMessage
                 Thread.Sleep(1500);
 
                 //PEGA O BOTÃO + 
-                var attachFile = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-icon='plus']")));
+                var attachFile = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-icon='plus-rounded']")));
                 attachFile.Click();
 
                 //var inputFile = driver.FindElement(By.XPath("//input[@type='file']"));
@@ -126,21 +126,21 @@ namespace BoWhatsMessage
 
                 Thread.Sleep(1000);
 
-                //ADICIONA O ARQUIVO -- //*[@id="app"]/div/span[6]/div/ul/div/div/div[2]/li/div/input
+                //ADICIONA O ARQUIVO -- ////*[@id="app"]/div/span[6]/div/ul/div/div/div[2]/li/div/input
                 var inputFile = driver.FindElement(By.XPath("//*[@id='app']/div/span[6]/div/ul/div/div/div[2]/li/div/input"));
 
                 //var inputFile = driver.FindElement(By.XPath("//*[@id='main']/footer/div[1]/div/span/div/div[1]/div[2]/div/span/div/ul/div/div[2]/li/div/input"));
 
                 inputFile.SendKeys($@"C:\Users\{nomeUser}\Contatos\{arquivo}");
 
-                Thread.Sleep(3000);
+                Thread.Sleep(1000);
 
                 //BOTÃO DE ENVIAR
-                IWebElement btnEnviar = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[@data-icon='send']")));
+                IWebElement btnEnviar = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[@data-icon='wds-ic-send-filled']")));
 
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
 
-                btnEnviar.Click();
+                //btnEnviar.Click();
 
                 Thread.Sleep(1000);
 
